@@ -19,6 +19,7 @@ public class TableDistances {
         ajouter("Le Havre", "New York", 5850);
         ajouter("Marseille", "Alger", 760);
         ajouter("Paris", "New York", 5840);
+        ajouter("Paris", "Le Havre", 365);
     }
 
     public final void ajouter(String villeA, String villeB, int km) {

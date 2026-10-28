@@ -3,6 +3,7 @@ package fr.efrei.transfret;
 import fr.efrei.transfret.vehicule.Avion;
 import fr.efrei.transfret.vehicule.Bateau;
 import fr.efrei.transfret.vehicule.Camion;
+import fr.efrei.transfret.vehicule.Peniche;
 import fr.efrei.transfret.vehicule.CamionFrigorifique;
 import fr.efrei.transfret.vehicule.Train;
 import fr.efrei.transfret.vehicule.Vehicule;
@@ -26,7 +27,8 @@ public class Flotte {
                 new CamionFrigorifique("IJ-789-KL", 8000),
                 new Train("TR-0001", 600000),
                 new Bateau("CMA-CGM-01", 20000000, true),
-                new Avion("F-GTXA", 100000)));
+                new Avion("F-GTXA", 100000),
+                new Peniche("PEN-0001", 2_500_000)));
     }
 
     public List<Vehicule> vehicules() {

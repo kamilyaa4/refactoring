@@ -29,7 +29,7 @@ public class NouveauSystemeAdapter implements SystemeTransport {
 
     @Override
     public void reinitialiser() {
-        app = new TransFret();
+        app = new TransFret(false); // le contrat décrit les tarifs sans le supplément hors gabarit
     }
 
     @Override
