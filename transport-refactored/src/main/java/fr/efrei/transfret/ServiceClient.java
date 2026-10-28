@@ -1,24 +1,16 @@
 package fr.efrei.transfret;
 
+import java.util.Optional;
+
+/** Inscrit un nouveau client (validation déléguée, enregistrement, email de bienvenue). */
 public class ServiceClient {
 
-    private static final int LONGUEUR_SIRET = 14;
+    private final ValidateurClient validateur = new ValidateurClient();
 
     public Client creerClient(String nom, String email, String telephone, String adresse, TypeClient type, String siret) {
-        if (nom == null || nom.trim().length() == 0) {
-            System.out.println("ERREUR : nom obligatoire");
-            return null;
-        }
-        if (email == null || !email.contains("@") || !email.contains(".")) {
-            System.out.println("ERREUR : email invalide (" + email + ")");
-            return null;
-        }
-        if (type == null) {
-            System.out.println("ERREUR : type de client inconnu");
-            return null;
-        }
-        if (type == TypeClient.ENTREPRISE && (siret == null || siret.length() != LONGUEUR_SIRET)) {
-            System.out.println("ERREUR : SIRET obligatoire (14 chiffres) pour une entreprise");
+        Optional<String> refus = validateur.valider(nom, email, type, siret);
+        if (refus.isPresent()) {
+            System.out.println("ERREUR : " + refus.get());
             return null;
         }
         Client c = new Client(nom, email, telephone, adresse, type, siret);

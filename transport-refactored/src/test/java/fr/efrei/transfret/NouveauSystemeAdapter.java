@@ -93,7 +93,7 @@ public class NouveauSystemeAdapter implements SystemeTransport {
 
     @Override
     public Optional<String> facture(String id) {
-        return Optional.ofNullable(Database.expeditions.get(id)).map(Expedition::genererFacture);
+        return Optional.ofNullable(Database.expeditions.get(id)).map(new GenerateurFacture()::generer);
     }
 
     @Override
