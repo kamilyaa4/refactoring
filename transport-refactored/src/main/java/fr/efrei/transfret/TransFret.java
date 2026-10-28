@@ -4,6 +4,7 @@ import fr.efrei.transfret.delai.DelaiAir;
 import fr.efrei.transfret.delai.DelaiMer;
 import fr.efrei.transfret.delai.DelaiRail;
 import fr.efrei.transfret.delai.DelaiRoute;
+import fr.efrei.transfret.prix.AssembleurPrix;
 import fr.efrei.transfret.remise.RemiseEntreprise;
 import fr.efrei.transfret.remise.RemisePremium;
 import fr.efrei.transfret.remise.SansRemise;
@@ -28,14 +29,14 @@ public class TransFret {
     public TransFret() {
         Notificateur notificateur = new Notificateur(email, sms);
         serviceClient = new ServiceClient(new ValidateurClient(), clients, notificateur);
-        CalculateurPrix calculateur = new CalculateurPrix(
+        CalculateurPrix calculateur = new CalculateurPrix(new AssembleurPrix(
                 Map.of(ModeTransport.ROUTE, new TarifRoute(),
                         ModeTransport.RAIL, new TarifRail(),
                         ModeTransport.MER, new TarifMer(),
                         ModeTransport.AIR, new TarifAir()),
                 Map.of(TypeClient.PARTICULIER, new SansRemise(),
                         TypeClient.ENTREPRISE, new RemiseEntreprise(),
-                        TypeClient.PREMIUM, new RemisePremium()));
+                        TypeClient.PREMIUM, new RemisePremium())).assembler());
         EstimateurDelai estimateurDelai = new EstimateurDelai(
                 Map.of(ModeTransport.ROUTE, new DelaiRoute(),
                         ModeTransport.RAIL, new DelaiRail(),
