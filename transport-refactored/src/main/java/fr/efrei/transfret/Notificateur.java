@@ -3,10 +3,22 @@ package fr.efrei.transfret;
 /** Prévient un client par email, et aussi par SMS s'il est PREMIUM. */
 public class Notificateur {
 
-    public void notifier(Client client, String sujet, String corps, String sms) {
-        EmailService.envoyer(client.getEmail(), sujet, corps);
+    private final CanalNotification email;
+    private final CanalNotification sms;
+
+    public Notificateur(CanalNotification email, CanalNotification sms) {
+        this.email = email;
+        this.sms = sms;
+    }
+
+    public void notifier(Client client, Message message) {
+        email.envoyer(client, message);
         if (client.getType() == TypeClient.PREMIUM) {
-            new SmsService().envoyerSms(client.getTelephone(), sms);
+            sms.envoyer(client, message);
         }
+    }
+
+    public void notifierParEmail(Client client, Message message) {
+        email.envoyer(client, message);
     }
 }
