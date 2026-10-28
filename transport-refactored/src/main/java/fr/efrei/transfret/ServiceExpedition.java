@@ -1,5 +1,7 @@
 package fr.efrei.transfret;
 
+import fr.efrei.transfret.vehicule.Vehicule;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -9,10 +11,6 @@ import java.util.OptionalInt;
 public class ServiceExpedition {
 
     private static final double FRAIS_ANNULATION_EN_COURS = 0.5;
-    private static final double KM_PAR_MILLE_NAUTIQUE = 1.852;
-    private static final int ROULAGE_PISTE_KM = 2;
-    private static final int ALTITUDE_CROISIERE_PIEDS = 35000;
-    private static final double TEMPERATURE_REFRIGERATION = 4;
 
     private final ExpeditionRepository expeditions;
     private final CalculateurPrix calculateur;
@@ -54,7 +52,7 @@ public class ServiceExpedition {
         }
         int distance = trajet.getAsInt();
 
-        Vehicule v = affectation.trouverVehicule(colis, mode);
+        Vehicule v = affectation.trouverVehicule(colis, mode).orElse(null);
         if (v == null) {
             System.out.println("ERREUR : aucun véhicule disponible pour cette expédition");
             return null;
@@ -109,24 +107,7 @@ public class ServiceExpedition {
         e.setStatut(StatutExpedition.EN_COURS);
         Vehicule v = e.getVehicule();
         v.setDisponible(false);
-        try {
-            v.faireLePlein();
-        } catch (Exception ex) {
-        }
-        switch (e.getMode()) {
-            case ROUTE, RAIL -> v.rouler(e.getDistance());
-            case MER -> v.naviguer((int) (e.getDistance() / KM_PAR_MILLE_NAUTIQUE));
-            case AIR -> {
-                v.rouler(ROULAGE_PISTE_KM);
-                v.voler(ALTITUDE_CROISIERE_PIEDS);
-            }
-        }
-        for (Colis c : e.getColis()) {
-            if (c.estDeType(TypeMarchandise.REFRIGERE)) {
-                v.activerRefrigeration(TEMPERATURE_REFRIGERATION);
-                break;
-            }
-        }
+        v.partir(e.getDistance());
         notificateur.notifier(e.getClient(), new Message("Votre expédition " + e.getId() + " est en route",
                 "Votre expédition a quitté " + e.getVilleDepart() + ".",
                 "TransFret : expédition " + e.getId() + " partie de " + e.getVilleDepart()));

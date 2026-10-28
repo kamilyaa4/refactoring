@@ -1,5 +1,12 @@
 package fr.efrei.transfret;
 
+import fr.efrei.transfret.vehicule.Avion;
+import fr.efrei.transfret.vehicule.Bateau;
+import fr.efrei.transfret.vehicule.Camion;
+import fr.efrei.transfret.vehicule.CamionFrigorifique;
+import fr.efrei.transfret.vehicule.Train;
+import fr.efrei.transfret.vehicule.Vehicule;
+
 import java.util.ArrayList;
 import java.util.List;
 

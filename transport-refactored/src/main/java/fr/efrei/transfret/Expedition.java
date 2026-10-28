@@ -1,5 +1,7 @@
 package fr.efrei.transfret;
 
+import fr.efrei.transfret.vehicule.Vehicule;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
