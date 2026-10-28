@@ -17,7 +17,7 @@ public class GenerateurFacture {
         sb.append("Facture n° F-" + e.getId() + "\n");
         sb.append("Date : " + Dates.formater(new Date()) + "\n");
         sb.append("Client : " + client.getNom() + "\n");
-        if (client.getType() == TypeClient.ENTREPRISE) {
+        if (client.getType().siretObligatoire()) {
             sb.append("SIRET : " + client.getSiret() + "\n");
         }
         sb.append("Adresse : " + client.getAdresse() + "\n");

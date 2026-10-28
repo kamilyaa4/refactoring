@@ -1,5 +1,18 @@
 package fr.efrei.transfret;
 
+import fr.efrei.transfret.delai.DelaiAir;
+import fr.efrei.transfret.delai.DelaiMer;
+import fr.efrei.transfret.delai.DelaiRail;
+import fr.efrei.transfret.delai.DelaiRoute;
+import fr.efrei.transfret.remise.RemiseEntreprise;
+import fr.efrei.transfret.remise.RemisePremium;
+import fr.efrei.transfret.remise.SansRemise;
+import fr.efrei.transfret.tarif.TarifAir;
+import fr.efrei.transfret.tarif.TarifMer;
+import fr.efrei.transfret.tarif.TarifRail;
+import fr.efrei.transfret.tarif.TarifRoute;
+
+import java.util.Map;
 import java.util.Random;
 
 /** Construit le graphe d'objets de l'application (seul endroit où l'on fait des « new » de services). */
@@ -15,8 +28,26 @@ public class TransFret {
     public TransFret() {
         Notificateur notificateur = new Notificateur(email, sms);
         serviceClient = new ServiceClient(new ValidateurClient(), clients, notificateur);
-        serviceExpedition = new ServiceExpedition(expeditions, new CalculateurPrix(),
-                new AffectationVehicule(Flotte.parDefaut()), new ValidateurExpedition(), new EstimateurDelai(),
+        CalculateurPrix calculateur = new CalculateurPrix(
+                Map.of(ModeTransport.ROUTE, new TarifRoute(),
+                        ModeTransport.RAIL, new TarifRail(),
+                        ModeTransport.MER, new TarifMer(),
+                        ModeTransport.AIR, new TarifAir()),
+                Map.of(TypeClient.PARTICULIER, new SansRemise(),
+                        TypeClient.ENTREPRISE, new RemiseEntreprise(),
+                        TypeClient.PREMIUM, new RemisePremium()));
+        EstimateurDelai estimateurDelai = new EstimateurDelai(
+                Map.of(ModeTransport.ROUTE, new DelaiRoute(),
+                        ModeTransport.RAIL, new DelaiRail(),
+                        ModeTransport.MER, new DelaiMer(),
+                        ModeTransport.AIR, new DelaiAir()));
+        serviceExpedition = new ServiceExpedition(expeditions, calculateur,
+                new AffectationVehicule(Flotte.parDefaut()), new ValidateurExpedition(Map.of(
+                        ModeTransport.ROUTE, new ContraintesMode(true, true, true),
+                        ModeTransport.RAIL, new ContraintesMode(true, false, true),
+                        ModeTransport.MER, new ContraintesMode(true, true, false),
+                        ModeTransport.AIR, new ContraintesMode(false, false, true))),
+                estimateurDelai,
                 notificateur, new TableDistances(), new GenerateurIdentifiant(new Random()));
     }
 
